@@ -4,6 +4,11 @@ require 'sinatra/base'
 
 module SamlServer
   class App < Sinatra::Base
+    use Rack::Session::Cookie, key: 'idp.session'
+    enable :inline_templates
+    disable :absolute_redirects
+    enable :prefixed_redirects
+
     helpers do
       include SamlIdp::Controller
 
@@ -11,11 +16,6 @@ module SamlServer
         session[:username]
       end
     end
-
-    use Rack::Session::Cookie, key: 'idp.session'
-    enable :inline_templates
-    disable :absolute_redirects
-    enable :prefixed_redirects
 
     before '/' do
       redirect '/login' unless current_user or request.path =~ %r{^/login/?} or request.path =~ %r{^/saml/}
