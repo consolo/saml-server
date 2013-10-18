@@ -7,7 +7,7 @@ options = {}
 OptionParser.new do |o|
   o.banner = "Usage: saml-server [options]"
   o.on('-p PORT', '--port PORT', 'Port') { |port| options[:port] = port }
-  o.on('--user UNAME:PSWD', 'Add a user') { |user| SamlServer.add_user(*user.split(':', 2)) }
+  o.on('--user UNAME:PSWD', "Add a user. If you don't add any users, all auth attempts will succeed.") { |user| SamlServer.add_user(*user.split(':', 2)) }
   o.on('--sp NAME:URL', 'Add a service provider to the portal') { |sp| SamlServer.add_sp(*sp.split(':', 2)) }
 end.parse!
 
