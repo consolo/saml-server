@@ -9,7 +9,7 @@ module SamlServer
   @config = Config.new([], [])
 
   # The default auth will always return true if there are no users
-  self.config.auth = proc do |username, password|
+  self.config.auth = proc do |username, password, request|
     users = SamlServer.config.users
     users.empty? or users.detect { |user| username && user.username == username && user.password == password }
   end

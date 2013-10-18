@@ -8,23 +8,23 @@ Check out [ruby-saml-idp](https://github.com/lawrencepit/ruby-saml-idp) on Githu
 
 ## Standalone
 
-    [bundle exec] samlize
+    [bundle exec] saml-server
 
-See "samlize --help" for command-line options.
+See "saml-server --help" for command-line options.
 
 ## Embeded
 
-    require 'samlize'
+    require 'saml-server'
 
 ### Optional config
 
     # Add some users. If you don't add any, all auth attempts will succeed.
-    Samlize.add_user 'user', 'password'
+    SamlServer.add_user 'user', 'password'
 
     # Or replace the entire auth logic block
-    Samlize.config.auth = proc do |username, password|
+    SamlServer.config.auth = proc do |username, password, request|
       # return true or false
     end
 
     # Add some SP endpoints to the portal
-    Samlize.add_sp 'My App', 'http://localhost:3000/login'
+    SamlServer.add_sp 'My App', 'http://localhost:3000/login'

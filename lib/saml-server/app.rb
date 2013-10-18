@@ -12,8 +12,10 @@ module SamlServer
       end
     end
 
-    use Rack::Session::Cookie, key: 'samlize.session'
+    use Rack::Session::Cookie, key: 'idp.session'
     enable :inline_templates
+    disable :absolute_redirects
+    enable :prefixed_redirects
 
     before '/' do
       redirect '/login' unless current_user or request.path =~ %r{^/login/?} or request.path =~ %r{^/saml/}
@@ -28,9 +30,9 @@ module SamlServer
     end
 
     post '/login' do
-      if SamlServer.config.auth.(params[:username], params[:password])
+      if SamlServer.config.auth.(params[:username], params[:password], request)
         session[:username] = params[:username]
-        redirect session[:SAMLRequest] ? '/saml/auth' : '/'
+        redirect session[:SAMLRequest] ? '/saml' : '/'
       else
         erb :login
       end
@@ -41,7 +43,7 @@ module SamlServer
       redirect '/login'
     end
 
-    get '/saml/auth' do
+    get '/saml' do
       if current_user
         decode_SAMLRequest(params[:SAMLRequest] || session[:SAMLRequest])
         @saml_response = encode_SAMLResponse(current_user)
@@ -66,7 +68,7 @@ __END__
 
 @@ login
 <h3>Login</h3>
-<form action="/login" method="post">
+<form action="<%= url('/login') %>" method="post">
   <p>
     <label for="username">Email</label>
     <input type="text" id="username" name="username" value="<%= params[:username] %>" autofocus="autofocus" />
@@ -101,7 +103,7 @@ __END__
     <%= yield %>
     <hr />
   <% if current_user %>
-    <a href="/logout">Logout</a>
+    <a href="<%= url('/logout') %>">Logout</a>
   <% end %>
   </body>
 </html>
