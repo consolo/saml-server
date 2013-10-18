@@ -11,9 +11,7 @@ Powered by [ruby-saml-idp](https://github.com/lawrencepit/ruby-saml-idp).
 
     [bundle exec] saml-server
 
-### Configuration
-
-See "--help".
+See "--help" for command-line config options.
 
 ## Embedded
 
