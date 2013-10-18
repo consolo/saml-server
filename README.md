@@ -17,7 +17,22 @@ See "--help".
 
 ## Embedded
 
-Simply "require 'saml-server"', then mount SamlServer::App at a suburi with Rack or Rails.
+In Rails's config/routes.rb:
+
+    YourApp::Application.routes.draw do
+      mount SamlServer::App.new, at: '/idp'
+      ...
+    end
+
+In Rack's config.ru:
+
+    map '/' do
+      run YourMainApp
+    end
+
+    map '/idp' do
+      run SamlServer::App
+    end
 
 ### Configuration
 
