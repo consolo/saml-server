@@ -47,7 +47,7 @@ module SamlServer
       if current_user
         decode_SAMLRequest(params[:SAMLRequest] || session[:SAMLRequest])
         @saml_response = encode_SAMLResponse(current_user)
-        erb :saml_response, layout: false
+        erb :saml_response
       else
         session[:SAMLRequest] = params[:SAMLRequest]
         redirect '/login'
@@ -60,11 +60,14 @@ __END__
 
 @@ index
 <h3>Portal</h3>
+<p>Welcome, <%= current_user %></p>
 <ul>
   <% SamlServer.config.service_providers.each do |sp| %>
     <li><a href="<%= sp.url %>"><%= sp.name %></a></li>
   <% end %>
 </ul>
+<hr />
+<a href="<%= url('/logout') %>">Logout</a>
 
 @@ login
 <h3>Login</h3>
@@ -81,29 +84,22 @@ __END__
 </form>
 
 @@ saml_response
-<!doctype html>
-<html>
-  <head><meta charset="utf-8"></head>
-  <body onload="document.forms[0].submit();" style="visibility:hidden;">
-    <form action="<%= @saml_acs_url %>" method="post">
-      <input type="hidden" name="SAMLResponse" value="<%= @saml_response %>" />
-      <input type="submit" value="Submit" />
-    </form>
-  </body>
-</html>
+<form action="<%= @saml_acs_url %>" method="post">
+  <input type="hidden" name="SAMLResponse" value="<%= @saml_response %>" />
+  <p>You are being signed in. If you are not redirected soon, please click <input type="submit" value="Continue" /></p>
+</form>
+<script>
+  window.onload = function() { document.forms[0].submit() };
+</script>
 
 @@ layout
 <!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>IdP App</title>
+    <title>Login</title>
   </head>
   <body>
     <%= yield %>
-    <hr />
-  <% if current_user %>
-    <a href="<%= url('/logout') %>">Logout</a>
-  <% end %>
   </body>
 </html>
