@@ -45,7 +45,7 @@ module SamlServer
 
     get '/saml' do
       if current_user
-        decode_SAMLRequest(params[:SAMLRequest] || session[:SAMLRequest])
+        decode_SAMLRequest(params[:SAMLRequest] || session.delete(:SAMLRequest))
         @saml_response = encode_SAMLResponse(current_user)
         erb :saml_response
       else
