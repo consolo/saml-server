@@ -1,5 +1,5 @@
 module SamlServer
-  Config = Struct.new(:service_providers, :users, :auth)
+  Config = Struct.new(:service_providers, :users, :auth, :attributes)
   SampleUser = Struct.new(:username, :password)
   SampleSp = Struct.new(:name, :url)
 
@@ -12,6 +12,11 @@ module SamlServer
   self.config.auth = proc do |username, password, request|
     users = SamlServer.config.users
     users.empty? or users.detect { |user| username && user.username == username && user.password == password }
+  end
+
+  # Returns a Hash of attributes about the user, to be passed along in the SAML response (or nil)
+  self.config.attributes = proc do |username|
+    nil
   end
 
   # Add a user and password for SAML authentication
