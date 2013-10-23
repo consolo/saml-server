@@ -30,10 +30,12 @@ module SamlServer
     end
 
     post '/login' do
-      if SamlServer.config.auth.(params[:username], params[:password], request)
+      auth = SamlServer.config.auth.(params[:username], params[:password], request)
+      if auth.success?
         session[:username] = params[:username]
         redirect session[:SAMLRequest] ? '/saml' : '/'
       else
+        @errors = auth.messages
         erb :login
       end
     end
@@ -71,6 +73,9 @@ __END__
 
 @@ login
 <h3>Login</h3>
+<% @errors.each do |error| %>
+  <p><%= error %></p>
+<% end if @errors %>
 <form action="<%= url('/login') %>" method="post">
   <p>
     <label for="username">Email</label>

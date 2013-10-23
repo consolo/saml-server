@@ -11,7 +11,11 @@ module SamlServer
   # The default auth will always return true if there are no users
   self.config.auth = proc do |username, password, request|
     users = SamlServer.config.users
-    users.empty? or users.detect { |user| username && user.username == username && user.password == password }
+    if users.empty? or users.detect { |user| username && user.username == username && user.password == password }
+      SamlServer::Auth.success
+    else
+      SamlServer::Auth.failure('Password does not match')
+    end
   end
 
   # Returns a Hash of attributes about the user, to be passed along in the SAML response (or nil)

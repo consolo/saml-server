@@ -39,7 +39,11 @@ In Rack's config.ru:
 
     # Or replace the entire auth logic block
     SamlServer.config.auth = proc do |username, password, request|
-      # return true or false
+      if good_password?(username, password)
+        SamlServer::Auth.success
+      else
+        SamlServer::Auth.failure('Error 1', 'Error 2', ...)
+      end
     end
 
     # Add some SP endpoints to the portal
