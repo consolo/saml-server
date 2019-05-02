@@ -2,14 +2,14 @@
 
 A stripped-down SAML IdP server and portal. Implements the Browser SSO Profile (http://en.wikipedia.org/wiki/SAML_2.0#Web_Browser_SSO_Profile, http://saml2int.org/profile/current).
 
-This is not intended to be a production-ready server. Rather, it provides a simulation for local development, testing, and proof-of-concept.
+This is **not** intended to be a production-ready server. Rather, it provides a simulation for local development, testing, and proof-of-concept.
 Once your app works with this, you should be able to drop in a "real" SAML IdP.
 
 Powered by [ruby-saml-idp](https://github.com/lawrencepit/ruby-saml-idp).
 
 ## Standalone
 
-    [bundle exec] saml-server
+    [bundle exec] saml-server --port 4568 --user user:pass --sp sample_app:http://localhost:4567
 
 See "--help" for command-line config options.
 
